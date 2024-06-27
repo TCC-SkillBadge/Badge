@@ -14,24 +14,48 @@ app.use(cors())
 
 app.post('/cadastrar', async (req: any, res: any) => {
     const { imagem_mb, desc_certificacao, criador } = req.body
-    try{
+    try {
         const novaBadge = await Badge.create({ imagem_mb, desc_certificacao, criador })
-        if(novaBadge){
+        if (novaBadge) {
             res.status(201).send('Badge cadastrada com sucesso')
         }
-        else{
+        else {
             res.status(503).send()
         }
     }
-    catch(err: any){
+    catch (err: any) {
         console.error("Erro no Badge.create()", err)
-        switch(err.errors[0].type){
+        switch (err.errors[0].type) {
             case 'unique violation':
                 res.status(409).send()
                 break
             default:
                 res.status(503).send()
         }
+    }
+})
+
+app.get('/consultar', async (req: any, res: any) => {
+    const { pesquisa } = req.query
+    try {
+        const badge = await Badge.findAll({
+            where: {
+                [Op.or]: [
+                    { id_badge: pesquisa },
+                    { criador: pesquisa }
+                ]
+            }
+        })
+        if (badge) {
+            res.status(200).json(badge)
+        }
+        else {
+            res.status(404).send()
+        }
+    }
+    catch (err) {
+        console.error("Erro na operação 'Consultar' no serviço de Badge", err)
+        res.status(503).send()
     }
 })
 
