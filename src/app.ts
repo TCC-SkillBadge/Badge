@@ -60,11 +60,7 @@ app.get('/consultar', async (req: any, res: any) => {
 })
 
 app.post('/atualizar', async (req: any, res: any) => {
-    let { id_badge, imagem_mb, desc_certificacao, criador } = req.body
-    id_badge = 4
-    imagem_mb = 'teste2IMG'
-    desc_certificacao = 'teste2DESC'
-    criador = 'testeCRIADOR'
+    const { id_badge, imagem_mb, desc_certificacao, criador } = req.body
     try {
         const badge = await Badge.update({ imagem_mb, desc_certificacao, criador }, { where: { id_badge } })
         if (badge) {
@@ -80,6 +76,29 @@ app.post('/atualizar', async (req: any, res: any) => {
             case 'unique violation':
                 res.status(409).send()
                 break
+            default:
+                res.status(503).send()
+        }
+    }
+})
+
+app.post('/excluir', async (req: any, res: any) => {
+    const { id_badge } = req.body
+    try {
+        const cont = await Badge.destroy({ where: { id_badge } })
+        if (cont > 0) {
+            res.status(201).send('Badge excluída com sucesso')
+        }
+        else {
+            res.status(503).send()
+        }
+    }
+    catch (err: any) {
+        console.error("Erro no Badge.destroy()", err)
+        switch (err.errors[0].type) {
+            // case 'unique violation':
+            //     res.status(409).send()
+            //     break
             default:
                 res.status(503).send()
         }
