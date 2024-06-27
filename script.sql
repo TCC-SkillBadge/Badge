@@ -8,3 +8,6 @@ CREATE TABLE badge
     CONSTRAINT PK_certificado PRIMARY KEY (id_badge),
     CONSTRAINT UN_certificado UNIQUE (imagem_mb)
 );
+
+ALTER TABLE badge
+	ADD COLUMN validade INT NULL;
