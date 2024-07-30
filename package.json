@@ -1,15 +1,15 @@
 {
-  "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.14.9",
-    "nodemon": "^3.1.4",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.5.2"
-  },
   "name": "badge",
   "version": "1.0.0",
-  "main": "app.js",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "start:dev": "nodemon --exec ts-node src/app.ts"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "axios": "^1.7.2",
     "cors": "^2.8.5",
@@ -17,15 +17,13 @@
     "express": "^4.19.2",
     "mysql2": "^3.10.1",
     "sequelize": "^6.37.3",
-    "undici-types": "^5.26.5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
   },
-  "scripts": {
-    "build": "tsc",
-    "start": "node --watch dist/app.js",
-    "start:dev": "nodemon --exec ts-node src/app.ts"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.9",
+    "nodemon": "^3.1.4"
+  }
 }
