@@ -6,7 +6,8 @@ export const createBadge = async (data: any) => {
 };
 
 export const findBadges = async (pesquisa: string) => {
-    return await BadgeModel.findAll({
+    console.log(`Procurando badge com critério: ${pesquisa}`);
+    const badges = await BadgeModel.findAll({
         where: {
             [Op.or]: [
                 { id_badge: pesquisa },
@@ -14,12 +15,14 @@ export const findBadges = async (pesquisa: string) => {
             ]
         }
     });
+    console.log('Resultado da pesquisa de badges:', badges);
+    return badges;
 };
 
-export const updateBadge = async (id_badge: string, data: any) => {
+export const updateBadge = async (id_badge: number, data: any) => {
     return await BadgeModel.update(data, { where: { id_badge } });
 };
 
-export const deleteBadge = async (id_badge: string) => {
+export const deleteBadge = async (id_badge: number) => {
     return await BadgeModel.destroy({ where: { id_badge } });
 };
