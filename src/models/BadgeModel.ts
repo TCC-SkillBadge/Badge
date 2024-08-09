@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
-class BadgeModel extends Model {}
+class BadgeModel extends Model { }
 
 BadgeModel.init({
     id_badge: {
@@ -10,18 +10,54 @@ BadgeModel.init({
         allowNull: false,
         primaryKey: true,
     },
-    imagem_mb: {
+    institution: {
+        type: DataTypes.STRING(70),
+        allowNull: false,
+    },
+    image_url: {
         type: DataTypes.STRING(70),
         allowNull: false,
         unique: true,
     },
-    desc_certificacao: {
+    name_badge: {
+        type: DataTypes.STRING(70),
+        allowNull: false,
+    },
+    desc_badge: {
         type: DataTypes.STRING(300),
         allowNull: false,
     },
-    criador: {
-        type: DataTypes.STRING(70),
+    validity_badge: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    status_badge: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    createdDate: {
+        type: DataTypes.DATE,
         allowNull: false,
+    },
+    createdUser: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    updatedDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    updatedUser: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    inactivatedDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    inactivatedUser: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
     },
 }, {
     sequelize,

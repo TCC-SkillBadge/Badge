@@ -12,6 +12,9 @@ export const findBadges = async (pesquisa: string) => {
             [Op.or]: [
                 { id_badge: pesquisa },
                 { criador: pesquisa }
+            ],
+            [Op.and]: [
+                { inactivatedDate: null }
             ]
         }
     });
@@ -23,6 +26,6 @@ export const updateBadge = async (id_badge: number, data: any) => {
     return await BadgeModel.update(data, { where: { id_badge } });
 };
 
-export const deleteBadge = async (id_badge: number) => {
-    return await BadgeModel.destroy({ where: { id_badge } });
+export const deleteBadge = async (id_badge: number, data: any) => {
+    return await BadgeModel.update(data, { where: { id_badge } });
 };

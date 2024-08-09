@@ -1,11 +1,54 @@
 import { Request, Response } from 'express';
 import { createBadge, findBadges, updateBadge, deleteBadge } from '../services/BadgeService';
 import { ErroInternoServidor, ServicoIndisponivel, BadgeNaoEncontrada, ViolacaoUnique } from '../utils/ErrorList';
+import { v2 as cloudinary } from 'cloudinary';
+import path from 'path';
+import dotenv from 'dotenv';
+dotenv.config(); 
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const uploadToCloudinary = (buffer: Buffer, originalname: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        originalname = path.parse(originalname).name;
+        const stream = cloudinary.uploader.upload_stream(
+            { resource_type: 'image', public_id: originalname },
+            (error, result) => {
+                if (error || !result) {                    
+                    reject(error || new Error('Erro inesperado ao fazer upload da imagem'));
+                } else {
+                    resolve(result.secure_url);
+                }
+            }
+        );
+        stream.end(buffer);
+    });
+};
 
 export const cadastrarBadge = async (req: Request, res: Response) => {
-    const { imagem_mb, desc_certificacao, criador } = req.body;
+    const { validity_badge, desc_badge, name_badge, institution, createdUser } = req.body;
+    const image_badge = req.file?.buffer;
+    const originalname = req.file?.originalname;
     try {
-        const novaBadge = await createBadge({ imagem_mb, desc_certificacao, criador });
+        const status_badge = 1;
+        const createdDate = new Date();
+        createdDate.setHours(createdDate.getHours() - 3);
+
+        let image_url: string | undefined;
+        if (image_badge && originalname) {
+            try {
+                image_url = await uploadToCloudinary(image_badge, originalname);
+            } catch (uploadError) {
+                console.error("Erro no upload da imagem", uploadError);
+                return res.status(500).send('Erro ao fazer upload da imagem');
+            }
+        }
+
+        const novaBadge = await createBadge({ image_url, validity_badge, desc_badge, name_badge, institution, status_badge, createdDate, createdUser });
         res.status(201).send('Badge cadastrada com sucesso');
     } catch (err: any) {
         console.error("Erro no Badge.create()", err);
@@ -33,9 +76,12 @@ export const consultarBadge = async (req: Request, res: Response) => {
 };
 
 export const atualizarBadge = async (req: Request, res: Response) => {
-    const { id_badge, imagem_mb, desc_certificacao, criador } = req.body;
+    const { id_badge, validity_badge, desc_badge, name_badge, updatedUser } = req.body;
     try {
-        const resultado = await updateBadge(id_badge, { imagem_mb, desc_certificacao, criador });
+        const updatedDate = new Date();
+        updatedDate.setHours(updatedDate.getHours() - 3);
+
+        const resultado = await updateBadge(id_badge, { validity_badge, desc_badge, name_badge, updatedDate, updatedUser });
         if (resultado[0] > 0) {
             res.status(200).send('Badge atualizada com sucesso');
         } else {
@@ -52,10 +98,13 @@ export const atualizarBadge = async (req: Request, res: Response) => {
 };
 
 export const excluirBadge = async (req: Request, res: Response) => {
-    const { id_badge } = req.body;
+    const { id_badge, inactivatedUser } = req.body;
     try {
-        const resultado = await deleteBadge(id_badge);
-        if (resultado > 0) {
+        const inactivatedDate = new Date();
+        inactivatedDate.setHours(inactivatedDate.getHours() - 3);
+
+        const resultado = await deleteBadge(id_badge, { inactivatedDate, inactivatedUser });
+        if (resultado[0] > 0) {
             res.status(200).send('Badge excluída com sucesso');
         } else {
             res.status(404).send(new BadgeNaoEncontrada());
