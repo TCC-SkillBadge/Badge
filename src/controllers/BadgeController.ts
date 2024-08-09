@@ -30,13 +30,13 @@ const uploadToCloudinary = (buffer: Buffer, originalname: string): Promise<strin
 };
 
 export const cadastrarBadge = async (req: Request, res: Response) => {
-    const { validity_badge, desc_badge, name_badge, institution, createdUser } = req.body;
+    const { validity_badge, desc_badge, name_badge, institution, created_user } = req.body;
     const image_badge = req.file?.buffer;
     const originalname = req.file?.originalname;
     try {
         const status_badge = 1;
-        const createdDate = new Date();
-        createdDate.setHours(createdDate.getHours() - 3);
+        const created_date = new Date();
+        created_date.setHours(created_date.getHours() - 3);
 
         let image_url: string | undefined;
         if (image_badge && originalname) {
@@ -48,7 +48,7 @@ export const cadastrarBadge = async (req: Request, res: Response) => {
             }
         }
 
-        const novaBadge = await createBadge({ image_url, validity_badge, desc_badge, name_badge, institution, status_badge, createdDate, createdUser });
+        const novaBadge = await createBadge({ image_url, validity_badge, desc_badge, name_badge, institution, status_badge, created_date, created_user });
         res.status(201).send('Badge cadastrada com sucesso');
     } catch (err: any) {
         console.error("Erro no Badge.create()", err);
@@ -76,12 +76,12 @@ export const consultarBadge = async (req: Request, res: Response) => {
 };
 
 export const atualizarBadge = async (req: Request, res: Response) => {
-    const { id_badge, validity_badge, desc_badge, name_badge, updatedUser } = req.body;
+    const { id_badge, validity_badge, desc_badge, name_badge, updated_user } = req.body;
     try {
-        const updatedDate = new Date();
-        updatedDate.setHours(updatedDate.getHours() - 3);
+        const updated_date = new Date();
+        updated_date.setHours(updated_date.getHours() - 3);
 
-        const resultado = await updateBadge(id_badge, { validity_badge, desc_badge, name_badge, updatedDate, updatedUser });
+        const resultado = await updateBadge(id_badge, { validity_badge, desc_badge, name_badge, updated_date, updated_user });
         if (resultado[0] > 0) {
             res.status(200).send('Badge atualizada com sucesso');
         } else {
@@ -98,12 +98,12 @@ export const atualizarBadge = async (req: Request, res: Response) => {
 };
 
 export const excluirBadge = async (req: Request, res: Response) => {
-    const { id_badge, inactivatedUser } = req.body;
+    const { id_badge, inactivated_user } = req.body;
     try {
-        const inactivatedDate = new Date();
-        inactivatedDate.setHours(inactivatedDate.getHours() - 3);
+        const inactivated_date = new Date();
+        inactivated_date.setHours(inactivated_date.getHours() - 3);
 
-        const resultado = await deleteBadge(id_badge, { inactivatedDate, inactivatedUser });
+        const resultado = await deleteBadge(id_badge, { inactivated_date, inactivated_user });
         if (resultado[0] > 0) {
             res.status(200).send('Badge excluída com sucesso');
         } else {

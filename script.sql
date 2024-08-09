@@ -6,12 +6,14 @@ CREATE TABLE badge (
     desc_badge VARCHAR(300) NOT NULL,
     validity_badge INT NULL,
     status_badge INT NOT NULL,
-    createdDate DATETIME NOT NULL,
-    createdUser INT NOT NULL,
-    updatedDate DATETIME NULL,
-    updatedUser INT NULL,
-    inactivatedDate DATETIME NULL,
-    inactivatedUser INT NULL,
+    created_date DATETIME NOT NULL,
+    created_user INT NOT NULL,
+    updated_date DATETIME NULL,
+    updated_user INT NULL,
+    inactivated_date DATETIME NULL,
+    inactivated_user INT NULL,
     CONSTRAINT PK_certificado PRIMARY KEY (id_badge),
     CONSTRAINT UN_certificado UNIQUE (image_url)
 );
+
+drop Table badge;
